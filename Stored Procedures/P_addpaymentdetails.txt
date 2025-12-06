@@ -1,0 +1,62 @@
+CREATE OR ALTER procedure [dbo].[P_addpaymentdetails]
+	@CUSTOMER_ID INT,
+	@RIDE_NUMBER INT,
+	@PAYMENT_STATUS INT,
+	@PAYMENT_METHOD VARCHAR(10)
+
+as
+DECLARE @MAXPAYMENTID INT,
+		@NEXTPAYMENTID INT;
+begin
+
+SELECT 
+	@MAXPAYMENTID = MAX(PAYMENT_ID) 
+FROM 
+	T_WAPAYMENTDETAILS;
+
+set @NEXTPAYMENTID = @MAXPAYMENTID + 1;
+
+PRINT('Maximum pay id is '+cast(@MAXPAYMENTID as varchar));
+PRINT('Next pay id is '+cast(@NEXTPAYMENTID as varchar));
+
+print(@CUSTOMER_ID);
+print(@RIDE_NUMBER);
+print(@PAYMENT_STATUS);
+print(@PAYMENT_METHOD);
+
+if exists (
+select
+	PAYMENT_ID,
+	CUSTOMER_ID,
+	RIDE_NUMBER,
+	BOOKING_DATE,
+	PAYMENT_STATUS,
+	PAYMENT_METHOD,
+	CHANGED_DATE
+from
+	T_WAPAYMENTDETAILS
+where
+	CUSTOMER_ID = @CUSTOMER_ID and
+	RIDE_NUMBER = @RIDE_NUMBER and
+	PAYMENT_STATUS = @PAYMENT_STATUS and
+	PAYMENT_METHOD = @PAYMENT_METHOD)
+
+	begin
+
+		insert into 
+			T_WAPAYMENTDETAILS (CUSTOMER_ID, RIDE_NUMBER, PAYMENT_STATUS, PAYMENT_METHOD)
+		values
+			(@CUSTOMER_ID, @RIDE_NUMBER, @PAYMENT_STATUS, @PAYMENT_METHOD);
+	
+	end
+
+	else
+	
+	begin
+		print('The record already exists. Please check again');
+	end
+
+end;
+GO
+
+

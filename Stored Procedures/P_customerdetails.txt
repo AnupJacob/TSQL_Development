@@ -1,0 +1,28 @@
+CREATE OR ALTER procedure [dbo].[P_customerdetails] 
+	@firstname varchar(100)
+as
+begin
+select
+	cd.CUSTOMER_ID,
+	cd.CUSTOMER_NAME,
+	cd.CUSTOMER_ADDRESS,
+	cd.CONTACT,
+	cd.EMAIL_ID,
+	cd.CHANGED_DATE,
+	pd.PAYMENT_ID,
+	pd.RIDE_NUMBER,
+	pd.BOOKING_DATE,
+	pd.PAYMENT_STATUS,
+	pd.PAYMENT_METHOD,
+	pd.CHANGED_DATE
+from
+	T_WACUSTOMERDETAILS CD join
+	T_WAPAYMENTDETAILS PD
+on 
+	cd.CUSTOMER_ID = pd.CUSTOMER_ID and
+	cd.CUSTOMER_NAME like ''+@firstname+'%';
+
+end
+GO
+
+
