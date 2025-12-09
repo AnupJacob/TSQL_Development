@@ -1,0 +1,33 @@
+CREATE OR ALTER procedure [dbo].[P_searchpokemon]
+@inputtype varchar(20)
+as
+begin
+
+with cte_pokemon as
+	(select
+		*
+	from
+		pokemon
+	where
+		Type_1 = @inputtype or
+		Type_2 = @inputtype
+	),
+	cte_pokemontypes as
+	(select
+		Number,
+		Type
+	from
+		PokemonTypes)
+
+	select
+		cte_pokemon.*,
+		pt1.Number as 'Type ID 1',
+		pt2.Number as "Type ID 2"
+	from
+		cte_pokemon
+		join cte_pokemontypes pt1 on cte_pokemon.Type_1=pt1.Type
+		join cte_pokemontypes pt2 on cte_pokemon.Type_2=pt2.Type;
+
+print('Thanks for using the search pokemon stored procedure');
+
+end;
